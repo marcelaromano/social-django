@@ -1,0 +1,69 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from .models import Question, Choice, get_access_token, save_and_print_posts, get_posts_from_fanpage, Comment, FanPage
+
+
+def index(request):
+    return HttpResponse("Hola, mundo.")
+
+
+def contact(request):
+    return HttpResponse("<h1>Contactanos.</h1><p>Ahora.</p>")
+
+
+def about(request):
+    return render(request, 'about.html')
+
+
+def results(request):
+    questions = Question.objects.all()
+    context = {
+        'template_questions': questions
+    }
+    return render(request, 'results.html', context)
+
+
+def vote(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        # Redisplay the question voting form.
+        return render(request, 'detail.html', {
+            'question': question,
+            'error_message': "You didn't select a choice.",
+        })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        # Always return an HttpResponseRedirect after successfully dealing
+        # with POST data. This prevents data from being posted twice if a
+        # user hits the Back button.
+        return HttpResponseRedirect(reverse('results', args=()))
+
+
+def facebook_fanpage(request, page_id):
+    Comment.objects.filter(post__fanpage__page_id=page_id).delete()
+
+    access_token = get_access_token()
+    posts_json = get_posts_from_fanpage(page_id, access_token)
+    save_and_print_posts(page_id, posts_json, access_token)
+
+    # obtener todos los posts de la base de datos, e incluirlos en el contexto del template a renderizar
+    comments = Comment.objects.all()
+    context = {
+        'comments': comments
+    }
+    return render(request, 'facebook/listar_posts.html', context)
+
+
+def saludo(request):
+    context = {
+        'name': 'Juan',
+        'es_manana': False,
+        'amigos': ['Pedro', 'Lorena', 'Pepe', 'Romina']
+    }
+    return render(request, 'saludo.html', context)

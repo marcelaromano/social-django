@@ -1,0 +1,18 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+</head>
+<body>
+    <div>
+        <h1>About</h1>
+        <p class="parrafo">Hola mundo.</p>
+        <p class="azul">Chau.</p>
+        <a href="{% url 'contact' %}">Contact</a>
+    </div>
+</body>
+</html>
