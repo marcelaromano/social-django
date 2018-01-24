@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 import requests
 import simplejson
-import codecs
 from django.db import models
 from polls import settings
 
