@@ -9,3 +9,9 @@ h1 {
 .azul {
     background-color: blue;
 }
+
+@media only screen and (max-width: 767px) {
+    body {
+        font-size: 44px;
+    }
+}
