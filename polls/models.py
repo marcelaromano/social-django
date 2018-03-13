@@ -82,8 +82,14 @@ def save_comments(post, comments):
         comment = Comment() # llama la constructor, se crea el objeto
         comment.message = comment_data['message']
         comment.date = comment_data['created_time']
-        comment.user_name = comment_data['from']['name']
-        comment.user_id = comment_data['from']['id']
+
+        try:
+            comment.user_name = comment_data['from']['name']
+            comment.user_id = comment_data['from']['id']
+        except KeyError:
+            comment.user_name = 'Unknown'
+            comment.user_id = 'Unknown'
+
         comment.post = post # asocio el post al comentario a crear
         comment.save() # se persiste el objeto y sus valores en la base de datos
 
