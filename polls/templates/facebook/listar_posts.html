@@ -9,23 +9,25 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <th>Page ID</th>
-                <th>Post text</th>
-                <th>Comment</th>
-            </thead>
-            <tbody>
-                {% for comment in comments.all %}
-                    <tr>
-                        <td>{{ comment.post.fanpage.page_id }}</td>
-                        <td>{{ comment.post.message }}</td>
-                        <td>{{ comment.message }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <th>Page ID</th>
+                    <th>Post text</th>
+                    <th>Comment</th>
+                </thead>
+                <tbody>
+                    {% for comment in comments.all %}
+                        <tr>
+                            <td>{{ comment.post.fanpage.page_id }}</td>
+                            <td>{{ comment.post.message }}</td>
+                            <td>{{ comment.message }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
