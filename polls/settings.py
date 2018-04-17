@@ -26,7 +26,7 @@ SECRET_KEY = 'pw%2c+o0^%4ges&g1^n7o@2(#un=mxcwd%qedy=9zy=b9bwz#d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-facebook.herokuapp.com']
+ALLOWED_HOSTS = ['django-facebook.herokuapp.com', 'localhost']
 
 
 # Application definition

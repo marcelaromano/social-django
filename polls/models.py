@@ -101,20 +101,22 @@ def save_and_print_posts(page_id, posts, access_token):
         fanpage = FanPage()
         fanpage.page_id = page_id
         fanpage.save()
+    try:
+        for post in posts['data']:
+            #print(repr(post['message']))
 
-    for post in posts['data']:
-        #print(repr(post['message']))
+            post_id = post['id']
+            comments = get_comments_from_post(post_id, access_token)
 
-        post_id = post['id']
-        comments = get_comments_from_post(post_id, access_token)
+            #for comment in comments['data']:
+            #    print(' - ' + comment['message'])
 
-        #for comment in comments['data']:
-        #    print(' - ' + comment['message'])
+            post_object = Post()
+            post_object.post_id = post_id
+            post_object.message = post['message']
+            post_object.fanpage = fanpage
+            post_object.save()
 
-        post_object = Post()
-        post_object.post_id = post_id
-        post_object.message = post['message']
-        post_object.fanpage = fanpage
-        post_object.save()
-
-        save_comments(post_object, comments)
+            save_comments(post_object, comments)
+    except Exception:
+        pass
