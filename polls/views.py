@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import Question, Choice, get_access_token, save_and_print_posts, get_posts_from_fanpage, Comment, FanPage
+from .forms import ResearcherForm
 
 
 def index(request):
@@ -67,3 +68,26 @@ def saludo(request):
         'amigos': ['Pedro', 'Lorena', 'Pepe', 'Romina']
     }
     return render(request, 'saludo.html', context)
+
+
+def researcher(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = ResearcherForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect('/researcher/results/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ResearcherForm()
+
+    return render(request, 'researcher.html', {'form': form})
+
+
+def researcher_results(request):
+    return render(request, 'researcher-results.html')

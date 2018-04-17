@@ -26,4 +26,6 @@ urlpatterns = [
     url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
     url(r'^facebook/(?P<page_id>\w+)/$', views.facebook_fanpage, name='facebook_fanpage'),
     url(r'^saludo/$', views.saludo, name='saludo'),
+    url(r'^researcher/results/$', views.researcher_results, name='researcher_results'),
+    url(r'^researcher/$', views.researcher, name='researcher'),
 ]
