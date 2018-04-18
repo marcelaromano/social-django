@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import Question, Choice, get_access_token, save_and_print_posts, get_posts_from_fanpage, Comment, FanPage, \
-    Palabra
+    Palabra, ExtractorPalabras
 from .forms import ResearcherForm
 
 
@@ -79,8 +79,15 @@ def researcher(request):
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
+
+            # 1. Obtengo la URL que el usuario ingreso en el formulario
+            url = form.cleaned_data['url']
+
+            # 2. Creo un objeto extractor y le digo que extraiga de la URL
+            extractor_palabras = ExtractorPalabras()
+            extractor_palabras.extraer(url)
+
+            # 3. Redirect a pagina de resultados
             return HttpResponseRedirect('/researcher/results/')
 
     # if a GET (or any other method) we'll create a blank form
@@ -91,7 +98,7 @@ def researcher(request):
 
 
 def researcher_results(request):
-    palabras = Palabra.objects.all()
+    palabras = Palabra.objects.all().order_by('-ocurrencias')
     context = {
         'palabras': palabras
     }

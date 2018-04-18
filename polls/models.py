@@ -3,6 +3,8 @@ import requests
 import simplejson
 from django.db import models
 from polls import settings
+from bs4 import BeautifulSoup
+import nltk
 
 
 class Question(models.Model):
@@ -144,3 +146,71 @@ class Palabra(models.Model):
 
     def __str__(self):
         return self.texto
+
+
+class ExtractorPalabras():
+    def limpiar_palabra(self, texto, caracter):
+        return texto.split(caracter)[0]
+
+    def extraer(self, url):
+        todas_oraciones = list()  # todas las oraciones en la URL
+
+        spanish_stops = set(nltk.corpus.stopwords.words('spanish'))
+        spanish_stops.update(['.', ',', '"', "'", '?', '!', ':', ';', '(', ')', '[', ']', '{', '}'])
+
+        # Se pide el HTML de la URL
+        response = requests.get(url)
+        # aca me tira html crudo texto plano
+        html = response.text
+        # beautifulsopu te lo ordena como los arbol los a ,, lo p
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Se obtienen uno por uno los parrafos en el HTML
+        for p in soup.find_all('p'):
+            contenido = p.text
+            if contenido != "":
+                oraciones = nltk.sent_tokenize(contenido)  # las oraciones en el parrafo actual
+                todas_oraciones.extend(oraciones)
+
+        # Se crean los modelos
+        objeto_website = Website()
+        objeto_website.url = url
+        objeto_website.save()
+
+        for texto_oracion in todas_oraciones:
+            objeto_oracion = Oracion()
+            objeto_oracion.texto = texto_oracion
+            objeto_oracion.website = objeto_website
+            objeto_oracion.save()
+
+            # Se obtiene una lista de los textos de cada palabra en la oracion
+            texto_palabras = nltk.tokenize.regexp_tokenize(texto_oracion, '\s+', gaps=True)
+
+            # Se eliminan las stops words
+            texto_palabras_limpio = []
+            for texto_palabra in texto_palabras:
+                if texto_palabra.lower() not in spanish_stops:
+                    # Limpiar signos de puntuacion en el texto de la palabra
+                    texto_palabra = self.limpiar_palabra(texto_palabra, '[')
+                    texto_palabra = self.limpiar_palabra(texto_palabra, ',')
+                    texto_palabra = self.limpiar_palabra(texto_palabra, '{')
+                    texto_palabra = self.limpiar_palabra(texto_palabra, '(')
+                    texto_palabra = self.limpiar_palabra(texto_palabra, ')')
+                    texto_palabra = self.limpiar_palabra(texto_palabra, '.')
+                    texto_palabra = self.limpiar_palabra(texto_palabra, ';')
+                    texto_palabra = self.limpiar_palabra(texto_palabra, ':')
+
+                    if len(texto_palabra) > 0:
+                        texto_palabras_limpio.append(texto_palabra.lower().replace('.', ''))
+
+            for texto_palabra in texto_palabras_limpio:
+                try:
+                    palabra = Palabra.objects.get(texto=texto_palabra, oracion=objeto_oracion)
+                    palabra.ocurrencias += 1
+                except Exception:
+                    palabra = Palabra()
+                    palabra.texto = texto_palabra
+                    palabra.oracion = objeto_oracion
+                    palabra.ocurrencias = 1
+
+                palabra.save()
