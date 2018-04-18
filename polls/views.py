@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from .models import Question, Choice, get_access_token, save_and_print_posts, get_posts_from_fanpage, Comment, FanPage
+from .models import Question, Choice, get_access_token, save_and_print_posts, get_posts_from_fanpage, Comment, FanPage, \
+    Palabra
 from .forms import ResearcherForm
 
 
@@ -90,4 +91,8 @@ def researcher(request):
 
 
 def researcher_results(request):
-    return render(request, 'researcher-results.html')
+    palabras = Palabra.objects.all()
+    context = {
+        'palabras': palabras
+    }
+    return render(request, 'researcher-results.html', context)

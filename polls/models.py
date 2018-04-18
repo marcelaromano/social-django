@@ -125,13 +125,22 @@ def save_and_print_posts(page_id, posts, access_token):
 class Website(models.Model):
     url = models.URLField()
 
+    def __str__(self):
+        return self.url
+
 
 class Oracion(models.Model):
     texto = models.CharField(max_length=500)
     website = models.ForeignKey(Website)
+
+    def __str__(self):
+        return self.texto
 
 
 class Palabra(models.Model):
     texto = models.CharField(max_length=50)
     ocurrencias = models.PositiveIntegerField(default=0)
     oracion = models.ForeignKey(Oracion)
+
+    def __str__(self):
+        return self.texto

@@ -10,6 +10,23 @@
 <body>
     <div>
         <h1>Researcher Results</h1>
+
+        <table>
+            <thead>
+                <th>URL</th>
+                <th>Palabra</th>
+                <th>Frecuencia</th>
+            </thead>
+            <tbody>
+                {% for palabra in palabras %}
+                    <tr>
+                        <td>{{ palabra.oracion.website.url }}</td>
+                        <td>{{ palabra.texto }}</td>
+                        <td>{{ palabra.ocurrencias }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
