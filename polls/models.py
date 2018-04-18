@@ -120,3 +120,18 @@ def save_and_print_posts(page_id, posts, access_token):
             save_comments(post_object, comments)
     except Exception:
         pass
+
+
+class Website(models.Model):
+    url = models.URLField()
+
+
+class Oracion(models.Model):
+    texto = models.CharField(max_length=500)
+    website = models.ForeignKey(Website)
+
+
+class Palabra(models.Model):
+    texto = models.CharField(max_length=50)
+    ocurrencias = models.PositiveIntegerField(default=0)
+    oracion = models.ForeignKey(Oracion)
