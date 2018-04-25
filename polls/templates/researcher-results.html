@@ -16,17 +16,20 @@
                 <th>URL</th>
                 <th>Palabra</th>
                 <th>Frecuencia</th>
+                <th>Oracion</th>
             </thead>
             <tbody>
                 {% for palabra in palabras %}
                     <tr>
-                        <td>{{ palabra.oracion.website.url }}</td>
+                        <td><a href="{% url 'researcher_results_by_website' palabra.oracion.website.id %}">{{ palabra.oracion.website.url }}</a></td>
                         <td>{{ palabra.texto }}</td>
                         <td>{{ palabra.ocurrencias }}</td>
+                        <td>{{ palabra.oracion.texto }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <a href="{% url 'researcher_results' %}">Volver</a>
     </div>
 </body>
 </html>

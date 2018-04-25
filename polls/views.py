@@ -98,7 +98,15 @@ def researcher(request):
 
 
 def researcher_results(request):
-    palabras = Palabra.objects.all().order_by('-ocurrencias')
+    palabras = Palabra.objects.filter(ocurrencias__gt=1).order_by('-ocurrencias')
+    context = {
+        'palabras': palabras
+    }
+    return render(request, 'researcher-results.html', context)
+
+
+def researcher_results_by_website(request, website_id):
+    palabras = Palabra.objects.filter(oracion__website__id=website_id, ocurrencias__gt=1).order_by('-ocurrencias')
     context = {
         'palabras': palabras
     }
