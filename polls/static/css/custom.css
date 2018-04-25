@@ -15,3 +15,7 @@ h1 {
         font-size: 44px!important;
     }
 }
+
+#id_url {
+    width: 85%;
+}

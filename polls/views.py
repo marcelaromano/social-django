@@ -80,15 +80,24 @@ def researcher(request):
         if form.is_valid():
             # process the data in form.cleaned_data as required
 
-            # 1. Obtengo la URL que el usuario ingreso en el formulario
-            url = form.cleaned_data['url']
+            # 1. Obtengo las URLs que el usuario ingreso en el formulario separadas por comas
+            url_form = form.cleaned_data['url']
 
-            # 2. Creo un objeto extractor y le digo que extraiga de la URL
+            # 2. Armo una lista con cada URL
+            lista_urls = url_form.split(',')
+
+            # 3. Creo un objeto extractor
             extractor_palabras = ExtractorPalabras()
-            website = extractor_palabras.extraer(url)
 
-            # 3. Redirect a pagina de resultados
-            return HttpResponseRedirect('/researcher/results/{}/'.format(website.id))
+            # 4. Por cada URL, invoco la extraccion
+            website_ids = []
+
+            for url in lista_urls:
+                website = extractor_palabras.extraer(url)
+                website_ids.append(str(website.id))
+
+            # 5. Redirect a pagina de resultados
+            return HttpResponseRedirect('/researcher/results/{}/'.format(','.join(website_ids)))
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -105,8 +114,9 @@ def researcher_results(request):
     return render(request, 'researcher-results.html', context)
 
 
-def researcher_results_by_website(request, website_id):
-    palabras = Palabra.objects.filter(oracion__website__id=website_id, ocurrencias__gt=1).order_by('-ocurrencias')
+def researcher_results_by_website(request, website_ids):
+    website_ids = website_ids.split(',')
+    palabras = Palabra.objects.filter(oracion__website__id__in=website_ids, ocurrencias__gt=1).order_by('-ocurrencias')
     context = {
         'palabras': palabras
     }
