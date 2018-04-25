@@ -19,3 +19,8 @@ h1 {
 #id_url {
     width: 85%;
 }
+
+table, th, td {
+    border: 1px solid black;
+    vertical-align: top;
+}

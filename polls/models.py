@@ -147,6 +147,22 @@ class Palabra(models.Model):
     def __str__(self):
         return self.texto
 
+    @property
+    def ocurrencias_general(self):
+        total = 0
+        palabras = Palabra.objects.filter(texto=self.texto, oracion__website=self.oracion.website)
+        for palabra in palabras:
+            total += palabra.ocurrencias
+        return total
+
+    @property
+    def oraciones_general(self):
+        texto_oraciones_con_palabra = []
+        palabras = Palabra.objects.filter(texto=self.texto, oracion__website=self.oracion.website)
+        for palabra in palabras:
+            texto_oraciones_con_palabra.append(palabra.oracion.texto)
+        return texto_oraciones_con_palabra
+
 
 class ExtractorPalabras():
     def limpiar_palabra(self, texto, caracter):

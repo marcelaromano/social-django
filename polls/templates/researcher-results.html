@@ -23,8 +23,14 @@
                     <tr>
                         <td><a href="{% url 'researcher_results_by_website' palabra.oracion.website.id %}">{{ palabra.oracion.website.url }}</a></td>
                         <td>{{ palabra.texto }}</td>
-                        <td>{{ palabra.ocurrencias }}</td>
-                        <td>{{ palabra.oracion.texto }}</td>
+                        <td>{{ palabra.ocurrencias_general }}</td>
+                        <td>
+                            <ul>
+                                {% for oracion in palabra.oraciones_general %}
+                                    <li>{{ oracion }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
